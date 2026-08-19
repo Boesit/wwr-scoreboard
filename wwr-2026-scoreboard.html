@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>2026 WWR World Championship Scoreboard</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f4f5f7;
+    color: #1a1a2e;
+  }
+  .header {
+    background: linear-gradient(135deg, #0b3d91, #1a5fb4);
+    color: #fff;
+    padding: 20px 24px;
+  }
+  .header h1 { margin: 0 0 4px; font-size: 20px; }
+  .header p { margin: 0; font-size: 13px; opacity: 0.9; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 12px;
+    margin-top: 8px;
+  }
+  .container { padding: 20px; max-width: 980px; margin: 0 auto; }
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+  .card h2 {
+    font-size: 15px;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .live-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #e0245e;
+    display: inline-block;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 6px; border-bottom: 1px solid #eee; }
+  th { color: #666; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em; }
+  tr:last-child td { border-bottom: none; }
+  .groups { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .groups { grid-template-columns: 1fr; } }
+  .result-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid #f0f0f0; gap: 10px; }
+  .result-row:last-child { border-bottom: none; }
+  .teams { display: flex; align-items: center; gap: 8px; font-size: 13.5px; flex-wrap: wrap; }
+  .score { font-weight: 700; font-size: 15px; }
+  .win { color: #0b7a3f; }
+  .meta { color: #888; font-size: 11px; text-align: right; min-width: 90px; }
+  .fixture-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+  .fixture-row:last-child { border-bottom: none; }
+  .time { color: #0b3d91; font-weight: 600; }
+  .pill { font-size: 10px; padding: 1px 7px; border-radius: 999px; background: #eef2ff; color: #364fc7; white-space: nowrap; }
+  .pill-b { background: #fff0eb; color: #b3400f; }
+  .unverified { background: #fff4d6; color: #8a6300; }
+  .today { background: #fff8e1; }
+  .footer-note { font-size: 11.5px; color: #888; line-height: 1.5; margin-top: 4px; }
+  .day-header { font-size: 12px; color: #0b3d91; font-weight: 700; margin: 16px 0 6px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .day-header:first-child { margin-top: 0; }
+  a { color: #1a5fb4; }
+  .pending { color: #b08900; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏉 2026 WWR World Championship — São Paulo, Brazil</h1>
+  <p>17–23 August 2026 · Paralympic Training Center · 12 teams, 47 matches</p>
+  <span class="badge">Medal matches: Sunday 23 August</span>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2><span class="live-dot"></span> All confirmed results</h2>
+
+    <div class="day-header">Day 1 — Monday 17 August</div>
+    <div class="result-row">
+      <div class="teams"><span class="pill">Group A</span> 🇦🇺 Australia <span class="score win">50</span> – <span class="score">41</span> Canada 🇨🇦</div>
+    </div>
+    <div class="result-row">
+      <div class="teams"><span class="pill">Group A</span> 🇧🇷 Brazil <span class="score">47</span> – <span class="score win">49</span> Netherlands 🇳🇱</div>
+    </div>
+
+    <div class="day-header">Day 2 — Tuesday 18 August</div>
+    <div class="result-row">
+      <div class="teams"><span class="pill">Group A</span> 🇳🇱 Netherlands <span class="score">33</span> – <span class="score win">57</span> USA 🇺🇸</div>
+    </div>
+    <div class="result-row">
+      <div class="teams"><span class="pill">Group A</span> 🇳🇿 New Zealand <span class="score">38</span> – <span class="score win">53</span> USA 🇺🇸</div>
+    </div>
+    <div class="result-row">
+      <div class="teams"><span class="pill">Group A</span> 🇳🇿 New Zealand <span class="score">31</span> – <span class="score win">62</span> Australia 🇦🇺</div>
+    </div>
+    <div class="result-row">
+      <div class="teams"><span class="pill">Group A</span> 🇧🇷 Brazil <span class="score win">49</span> – <span class="score">48</span> Canada 🇨🇦</div>
+    </div>
+    <div class="result-row">
+      <div class="teams"><span class="pill pill-b">Group B</span> 🇨🇴 Colombia <span class="score">44</span> – <span class="score win">57</span> Germany 🇩🇪</div>
+    </div>
+    <div class="result-row">
+      <div class="teams"><span class="pill pill-b">Group B</span> 🇩🇰 Denmark <span class="score">56</span> – <span class="score win">57</span> Great Britain 🇬🇧 <span class="pill unverified">unverified</span></div>
+    </div>
+    <div class="result-row">
+      <div class="teams"><span class="pill pill-b">Group B</span> 🇨🇴 Colombia <span class="score">42</span> – <span class="score win">55</span> Great Britain 🇬🇧 <span class="pill unverified">unverified</span></div>
+    </div>
+    <div class="result-row">
+      <div class="teams"><span class="pill pill-b">Group B</span> 🇩🇪 Germany <span class="score">44</span> – <span class="score win">60</span> Japan 🇯🇵 <span class="pill unverified">unverified</span></div>
+    </div>
+    <div class="result-row">
+      <div class="teams"><span class="pill pill-b">Group B</span> 🇩🇰 Denmark <span class="score">53</span> – <span class="score win">56</span> France 🇫🇷 <span class="pill unverified">unverified</span></div>
+    </div>
+
+    <p class="footer-note"><strong>On the Denmark matches:</strong> Denmark lost to Great Britain 56–57 and lost to France 53–56, both on 18 August — these four "unverified" Group B scores (marked above) trace back to Brazilian Paralympic Committee (cpb.org.br) coverage that shows up consistently across independent searches, but cpb.org.br itself is a JavaScript-only page that couldn't be directly fetched and quoted, so treat them as very likely correct but one step removed from a directly-quoted primary source. Every other score on this page has been confirmed against a directly quoted federation source (USA Wheelchair Rugby, Wheelchair Rugby Canada, Wheelchair Rugby Australia, Colombia's Amigos del Deporte, or Brazil's ABRC federation).</p>
+  </div>
+
+  <div class="card">
+    <h2>Day 3 (today, Wed 19 Aug) — in progress, no scores posted yet</h2>
+    <div class="fixture-row today"><div><span class="pill pill-b">Group B</span> 🇨🇴 Colombia vs 🇫🇷 France</div><div class="time">09:00 BRT</div></div>
+    <div class="fixture-row today"><div><span class="pill pill-b">Group B</span> 🇩🇪 Germany vs 🇬🇧 Great Britain</div><div class="time">09:30 BRT</div></div>
+    <div class="fixture-row today"><div><span class="pill pill-b">Group B</span> 🇯🇵 Japan vs 🇩🇰 Denmark</div><div class="time">11:00 BRT</div></div>
+    <div class="fixture-row today"><div><span class="pill">Group A</span> 🇳🇱 Netherlands vs 🇳🇿 New Zealand</div><div class="time">15:00 BRT</div></div>
+    <div class="fixture-row today"><div><span class="pill pill-b">Group B</span> 🇫🇷 France vs 🇩🇪 Germany</div><div class="time">15:30 BRT</div></div>
+    <div class="fixture-row today"><div><span class="pill pill-b">Group B</span> 🇬🇧 Great Britain vs 🇯🇵 Japan</div><div class="time">17:00 BRT</div></div>
+    <div class="fixture-row today"><div><span class="pill">Group A</span> 🇨🇦 Canada vs 🇺🇸 USA</div><div class="time">17:30 BRT (3:30pm CT)</div></div>
+    <div class="fixture-row today"><div><span class="pill pill-b">Group B</span> 🇨🇴 Colombia vs 🇩🇰 Denmark</div><div class="time">19:00 BRT</div></div>
+    <div class="fixture-row today"><div><span class="pill">Group A</span> 🇧🇷 Brazil vs 🇦🇺 Australia</div><div class="time">19:30 BRT</div></div>
+    <p class="footer-note">Nine matches today across both groups (BRT = São Paulo local time). No federation or news site had posted a result for any of these as of this update — check back after they've finished.</p>
+  </div>
+
+  <div class="card">
+    <h2>Day 4 (Thu 20 Aug) — upcoming</h2>
+    <div class="fixture-row"><div><span class="pill">Group A</span> 🇳🇱 Netherlands vs 🇨🇦 Canada</div><div class="time">8:00am ET</div></div>
+    <div class="fixture-row"><div><span class="pill">Group A</span> 🇦🇺 Australia vs 🇺🇸 USA</div><div class="time">9:30am local</div></div>
+    <div class="fixture-row"><div><span class="pill pill-b">Group B</span> 🇫🇷 France vs 🇯🇵 Japan</div><div class="time">9:30am local</div></div>
+    <div class="fixture-row"><div><span class="pill">Group A</span> 🇨🇦 Canada vs 🇳🇿 New Zealand</div><div class="time">4:00pm ET</div></div>
+    <div class="fixture-row"><div><span class="pill">Group A</span> 🇧🇷 Brazil vs 🇺🇸 USA</div><div class="time">5:30pm local</div></div>
+    <div class="fixture-row"><div><span class="pill pill-b">Group B</span> 🇩🇰 Denmark vs 🇩🇪 Germany</div><div class="time">20:00 CEST</div></div>
+    <div class="fixture-row"><div><span class="pill pill-b">Group B</span> 🇨🇴 Colombia vs 🇯🇵 Japan</div><div class="time">TBD</div></div>
+    <div class="fixture-row"><div><span class="pill pill-b">Group B</span> 🇬🇧 Great Britain vs 🇫🇷 France</div><div class="time">TBD</div></div>
+    <p class="footer-note">This is the final day of the group stage — every team's last 1-2 pool games. Times as published by USA Wheelchair Rugby (ET), Wheelchair Rugby Canada (ET), Wheelchair Rugby Australia/local BRT, and Team Deutschland Paralympics (CEST).</p>
+  </div>
+
+  <div class="card">
+    <h2>Standings through Day 2 (Group A complete, Group B partial)</h2>
+    <div class="groups">
+      <div>
+        <div class="day-header">Group A</div>
+        <table>
+          <tr><th>Team</th><th>W</th><th>L</th><th>PF–PA</th></tr>
+          <tr><td>🇦🇺 Australia</td><td>2</td><td>0</td><td>112–72</td></tr>
+          <tr><td>🇺🇸 USA</td><td>2</td><td>0</td><td>110–71</td></tr>
+          <tr><td>🇧🇷 Brazil</td><td>1</td><td>1</td><td>96–97</td></tr>
+          <tr><td>🇳🇱 Netherlands</td><td>1</td><td>1</td><td>82–104</td></tr>
+          <tr><td>🇨🇦 Canada</td><td>0</td><td>2</td><td>89–99</td></tr>
+          <tr><td>🇳🇿 New Zealand</td><td>0</td><td>2</td><td>69–115</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="day-header">Group B <span class="pill unverified" style="font-style:normal;">partly unverified</span></div>
+        <table>
+          <tr><th>Team</th><th>W</th><th>L</th><th>PF–PA</th></tr>
+          <tr><td>🇬🇧 Great Britain</td><td>2</td><td>0</td><td>112–98</td></tr>
+          <tr><td>🇩🇪 Germany</td><td>1</td><td>1</td><td>101–104</td></tr>
+          <tr><td>🇯🇵 Japan</td><td>1</td><td>0</td><td>60–44</td></tr>
+          <tr><td>🇫🇷 France</td><td>1</td><td>0</td><td>56–53</td></tr>
+          <tr><td>🇨🇴 Colombia</td><td>0</td><td>2</td><td>86–112</td></tr>
+          <tr><td>🇩🇰 Denmark</td><td>0</td><td>2</td><td>109–113</td></tr>
+        </table>
+      </div>
+    </div>
+    <p class="footer-note">Group A is fully settled through everyone's first two games. Group B: Japan and France have each played only 1 of their first 2 games so far (their second Day-2 fixture wasn't part of the confirmed schedule) — both are undefeated so far. Colombia's and Denmark's Group B records include the four "unverified" scores noted above.</p>
+  </div>
+
+  <div class="card">
+    <h2>Groups</h2>
+    <div class="groups">
+      <div>
+        <div class="day-header">Group A</div>
+        <table>
+          <tr><th>Team</th><th>Note</th></tr>
+          <tr><td>🇦🇺 Australia</td><td>Defending champions</td></tr>
+          <tr><td>🇧🇷 Brazil</td><td>Host nation</td></tr>
+          <tr><td>🇨🇦 Canada</td><td></td></tr>
+          <tr><td>🇳🇱 Netherlands</td><td>First worlds in 20 years</td></tr>
+          <tr><td>🇳🇿 New Zealand</td><td></td></tr>
+          <tr><td>🇺🇸 USA</td><td>2024 Paralympic silver</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="day-header">Group B</div>
+        <table>
+          <tr><th>Team</th><th>Note</th></tr>
+          <tr><td>🇯🇵 Japan</td><td>2024 Paralympic gold, top seed</td></tr>
+          <tr><td>🇬🇧 Great Britain</td><td></td></tr>
+          <tr><td>🇫🇷 France</td><td></td></tr>
+          <tr><td>🇩🇪 Germany</td><td></td></tr>
+          <tr><td>🇨🇴 Colombia</td><td></td></tr>
+          <tr><td>🇩🇰 Denmark</td><td></td></tr>
+        </table>
+      </div>
+    </div>
+    <p class="footer-note">Group B confirmed directly from Germany's published match schedule (Colombia, Japan, Great Britain, France, Denmark are Germany's five group opponents), cross-checked against Colombian and Brazilian federation coverage.</p>
+  </div>
+
+  <div class="card">
+    <h2>Tournament schedule</h2>
+    <div class="day-header">Group stage</div>
+    <div class="fixture-row"><div>Pool matches, all teams</div><div class="time">Mon 17 – Thu 20 Aug</div></div>
+    <div class="day-header">Knockout rounds</div>
+    <div class="fixture-row"><div>Quarterfinals</div><div class="time">Fri 21 Aug</div></div>
+    <div class="fixture-row"><div>Semifinals</div><div class="time">Sat 22 Aug</div></div>
+    <div class="fixture-row"><div>Bronze &amp; Gold medal matches</div><div class="time">Sun 23 Aug</div></div>
+  </div>
+
+  <div class="card">
+    <h2>Sources &amp; freshness</h2>
+    <p class="footer-note">
+      Last refreshed 19 August 2026, using: USA Wheelchair Rugby fixtures (usawr.org/fixtures), Wheelchair Rugby Canada (wheelchairrugby.ca), Wheelchair Rugby Australia (wheelchairrugby.com.au/news), Brazil's ABRC federation (rugbiabrc.org.br) and CPB coverage, Colombia's Amigos del Deporte, Team Deutschland Paralympics / DBS (teamdeutschland-paralympics.de, dbs-npc.de), France's Bleus Handisport (bleushandisport.com), the International Paralympic Committee, and the Canadian Paralympic Committee. The official live-scoring platform for this event is a JS app at <a href="https://tournifyapp.com/live/2026wrwc" target="_blank">tournifyapp.com/live/2026wrwc</a>, which can't be read automatically — so this reflects the most recent confirmed scores found across federation recap articles and press coverage rather than a true real-time feed. Scores marked "unverified" above are consistently reported across independent sources but couldn't be directly quoted from a primary page. This artifact refreshes automatically on an hourly schedule; you can also ask to have it refreshed on demand.
+    </p>
+  </div>
+
+</div>
+</body>
+</html>
