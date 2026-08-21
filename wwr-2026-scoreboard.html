@@ -3,44 +3,251 @@
 {
   "name": "Wwr 2026 Scoreboard",
   "schemaVersion": 1,
-  "description": "Scoreboard for the 2026 WWR World Championship (wheelchair rugby) in São Paulo: latest results, USA's upcoming fixtures, groups, and tournament schedule through the 23 Aug medal matches."
+  "description": "2026 WWR World Championship (wheelchair rugby) in São Paulo — tournament view first: full round-robin crosstables of all 30 group results with standings; Details tab: every match result, Friday's quarterfinals, final standings, groups, schedule and sources."
 }
 </script>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>2026 WWR World Championship Scoreboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026 WWR World Championship — Tournament &amp; Scoreboard</title>
 <style>
-  :root { color-scheme: light; }
-  * { box-sizing: border-box; }
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: #f4f5f7;
-    color: #1a1a2e;
-  }
-  .header {
-    background: linear-gradient(135deg, #0b3d91, #1a5fb4);
+    background: #0b0822;
     color: #fff;
-    padding: 20px 24px;
+    min-height: 100vh;
   }
-  .header h1 { margin: 0 0 4px; font-size: 20px; }
-  .header p { margin: 0; font-size: 13px; opacity: 0.9; }
-  .badge {
-    display: inline-block;
-    background: rgba(255,255,255,0.18);
-    border-radius: 999px;
-    padding: 2px 10px;
+  .topbar {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 14px 18px 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 12.5px;
+    color: #c7c3f0;
+  }
+  .poster {
+    max-width: 1080px;
+    margin: 14px auto 26px;
+    background:
+      radial-gradient(900px 420px at 12% -10%, rgba(124,58,237,0.55), transparent 60%),
+      radial-gradient(800px 420px at 88% -10%, rgba(219,39,119,0.4), transparent 60%),
+      radial-gradient(700px 500px at 50% 115%, rgba(34,211,238,0.22), transparent 60%),
+      linear-gradient(160deg, #1e1b4b 0%, #312e81 34%, #6d28d9 68%, #a21caf 100%);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 22px;
+    padding: 30px 28px 24px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+  }
+  .cup { text-align: center; }
+  .cup .kicker {
     font-size: 12px;
-    margin-top: 8px;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.72);
+    margin-bottom: 6px;
   }
-  .container { padding: 20px; max-width: 980px; margin: 0 auto; }
+  .cup h1 {
+    font-size: 44px;
+    font-weight: 900;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    line-height: 1.05;
+    background: linear-gradient(180deg, #fff 30%, #fbcfe8 70%, #f9a8d4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .cup .sub {
+    margin-top: 8px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.06em;
+  }
+  .live-badge {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #fff;
+    background: rgba(16,185,129,0.85);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 999px;
+    padding: 4px 14px;
+  }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; display: inline-block; margin-right: 6px; animation: pulse 1.4s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
+  @media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .tab-btn {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 999px;
+    padding: 9px 26px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .tab-btn:hover { background: rgba(255,255,255,0.16); color: #fff; }
+  .tab-btn.active {
+    background: linear-gradient(90deg, #f59e0b, #e11d48);
+    border-color: transparent;
+    color: #fff;
+  }
+  .tabpanel { display: none; }
+  .tabpanel.active { display: block; animation: fadein 0.25s ease; }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .tabpanel.active { animation: none; } }
+
+  /* Round-robin group panels */
+  .gpanel {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 16px;
+    padding: 14px 16px 12px;
+    margin-top: 18px;
+    backdrop-filter: blur(6px);
+  }
+  .ghead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .gchip {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    color: #fff;
+    border-radius: 999px;
+    padding: 4px 14px;
+  }
+  .gchip.a { background: linear-gradient(90deg, #06b6d4, #3b82f6); }
+  .gchip.b { background: linear-gradient(90deg, #f472b6, #a855f7); }
+  .ghead .gmeta { font-size: 11px; color: rgba(255,255,255,0.62); }
+
+  .rr-wrap { overflow-x: auto; }
+  table.rr {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 12px;
+  }
+  table.rr th, table.rr td {
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.09);
+    text-align: center;
+    white-space: nowrap;
+  }
+  table.rr thead th {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 0.04em;
+  }
+  table.rr thead th .fl { font-size: 13px; display: block; margin-bottom: 2px; }
+  table.rr thead tr th:first-child { text-align: left; }
+  table.rr tbody th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 12.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.09);
+  }
+  table.rr tbody th .seed {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 800;
+    background: rgba(255,255,255,0.16);
+    border-radius: 6px;
+    padding: 1px 5px;
+    margin-right: 6px;
+    color: #e0e7ff;
+    vertical-align: 1px;
+  }
+  table.rr tbody th .tag {
+    font-size: 9px;
+    color: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,0.14);
+    border-radius: 999px;
+    padding: 1px 7px;
+    margin-left: 6px;
+    font-weight: 600;
+  }
+  tr.dim { opacity: 0.55; }
+  td.diag { color: rgba(255,255,255,0.25); }
+  td .win { color: #fcd34d; font-weight: 800; }
+  td .lose { color: rgba(255,255,255,0.55); }
+  td.stats { font-size: 11px; color: rgba(255,255,255,0.7); }
+  td.stats b { color: #fff; font-weight: 700; }
+  td.pd { font-size: 11px; font-weight: 700; }
+  td.pd.pos { color: #4ade80; }
+  td.pd.neg { color: #f87171; }
+  .legend {
+    margin-top: 8px;
+    font-size: 10.5px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.5;
+  }
+  .legend .win { color: #fcd34d; font-weight: 700; }
+
+  /* Road to the title */
+  .road { margin-top: 18px; }
+  .road h2 {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+  .chip {
+    font-size: 11px;
+    color: #e2e8f0;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 999px;
+    padding: 4px 12px;
+    white-space: nowrap;
+  }
+  .chip b { color: #fff; }
+
+  /* Details tab — scoreboard cards (dark theme) */
   .card {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    padding: 18px;
-    margin-bottom: 18px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-top: 18px;
+    backdrop-filter: blur(6px);
   }
   .card h2 {
     font-size: 15px;
@@ -49,251 +256,560 @@
     align-items: center;
     gap: 6px;
   }
-  .live-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #e0245e;
-    display: inline-block;
-    animation: pulse 1.5s infinite;
+  .card .live-dot { background: #f43f5e; }
+  .day-header {
+    font-size: 12px;
+    color: #7dd3fc;
+    font-weight: 800;
+    margin: 16px 0 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { text-align: left; padding: 7px 6px; border-bottom: 1px solid #eee; }
-  th { color: #666; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em; }
-  tr:last-child td { border-bottom: none; }
-  .groups { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 640px) { .groups { grid-template-columns: 1fr; } }
-  .result-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid #f0f0f0; gap: 10px; }
+  .day-header:first-child { margin-top: 0; }
+  .result-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.09);
+    gap: 10px;
+  }
   .result-row:last-child { border-bottom: none; }
   .teams { display: flex; align-items: center; gap: 8px; font-size: 13.5px; flex-wrap: wrap; }
-  .score { font-weight: 700; font-size: 15px; }
-  .win { color: #0b7a3f; }
-  .meta { color: #888; font-size: 11px; text-align: right; min-width: 90px; }
-  .fixture-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+  .score { font-weight: 700; font-size: 15px; color: rgba(255,255,255,0.85); }
+  .win { color: #fcd34d; }
+  .meta { color: rgba(255,255,255,0.5); font-size: 11px; text-align: right; min-width: 90px; }
+  .fixture-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.09);
+    font-size: 13px;
+  }
   .fixture-row:last-child { border-bottom: none; }
-  .time { color: #0b3d91; font-weight: 600; }
-  .pill { font-size: 10px; padding: 1px 7px; border-radius: 999px; background: #eef2ff; color: #364fc7; white-space: nowrap; }
-  .pill-b { background: #fff0eb; color: #b3400f; }
-  .unverified { background: #fff4d6; color: #8a6300; }
-  .today { background: #fff8e1; }
-  .footer-note { font-size: 11.5px; color: #888; line-height: 1.5; margin-top: 4px; }
-  .day-header { font-size: 12px; color: #0b3d91; font-weight: 700; margin: 16px 0 6px; text-transform: uppercase; letter-spacing: 0.03em; }
-  .day-header:first-child { margin-top: 0; }
-  a { color: #1a5fb4; }
-  .pending { color: #b08900; font-style: italic; }
+  .time { color: #7dd3fc; font-weight: 600; white-space: nowrap; }
+  .pill {
+    font-size: 10px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+    color: #e0e7ff;
+    white-space: nowrap;
+  }
+  .pill-b { background: rgba(244,114,182,0.18); color: #f9a8d4; }
+  .unverified { background: rgba(250,204,21,0.16); color: #fde047; }
+  .today { background: rgba(251,191,36,0.12); }
+  .card table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .card th, .card td { text-align: left; padding: 7px 6px; border-bottom: 1px solid rgba(255,255,255,0.09); }
+  .card th { color: rgba(255,255,255,0.6); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .card tr:last-child td { border-bottom: none; }
+  .groups { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .groups { grid-template-columns: 1fr; } }
+  .footer-note { font-size: 11.5px; color: rgba(255,255,255,0.6); line-height: 1.6; margin-top: 10px; }
+  .footer-note strong { color: #fff; }
+  .pending { color: #fbbf24; font-style: italic; }
+  a { color: #a5b4fc; }
+
+  .foot {
+    max-width: 1080px;
+    margin: 0 auto 30px;
+    padding: 0 18px;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: #9d9ac7;
+  }
+  .foot a { color: #a5b4fc; }
+
+  @media (max-width: 640px) {
+    .cup h1 { font-size: 30px; letter-spacing: 0.16em; }
+    .tab-btn { padding: 8px 16px; font-size: 11px; }
+  }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>🏉 2026 WWR World Championship — São Paulo, Brazil</h1>
-  <p>17–23 August 2026 · Paralympic Training Center · 12 teams, 47 matches</p>
-  <span class="badge">Medal matches: Sunday 23 August</span>
-  <a class="badge" href="tournament.html" style="text-decoration:none;display:inline-block;margin-left:6px;">🏆 Tournament view →</a>
+<div class="topbar">
+  <span>WWR 2026 · São Paulo · refreshed 21 Aug ~03:10 BRT</span>
 </div>
 
-<div class="container">
+<div class="poster">
 
-  <div class="card">
-    <h2><span class="live-dot"></span> All confirmed results</h2>
-
-    <div class="day-header">Day 1 — Monday 17 August</div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇦🇺 Australia <span class="score win">50</span> – <span class="score">41</span> Canada 🇨🇦</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇧🇷 Brazil <span class="score">47</span> – <span class="score win">49</span> Netherlands 🇳🇱</div>
-    </div>
-
-    <div class="day-header">Day 2 — Tuesday 18 August</div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇳🇱 Netherlands <span class="score">33</span> – <span class="score win">57</span> USA 🇺🇸</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇳🇿 New Zealand <span class="score">38</span> – <span class="score win">53</span> USA 🇺🇸</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇳🇿 New Zealand <span class="score">31</span> – <span class="score win">62</span> Australia 🇦🇺</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇧🇷 Brazil <span class="score win">49</span> – <span class="score">48</span> Canada 🇨🇦</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇨🇴 Colombia <span class="score">44</span> – <span class="score win">57</span> Germany 🇩🇪</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇩🇰 Denmark <span class="score">56</span> – <span class="score win">57</span> Great Britain 🇬🇧</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇨🇴 Colombia <span class="score">42</span> – <span class="score win">55</span> Great Britain 🇬🇧</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇩🇪 Germany <span class="score">44</span> – <span class="score win">60</span> Japan 🇯🇵</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇩🇰 Denmark <span class="score">53</span> – <span class="score win">56</span> France 🇫🇷</div>
-    </div>
-
-    <div class="day-header">Day 3 — Wednesday 19 August</div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇨🇴 Colombia <span class="score">40</span> – <span class="score win">51</span> France 🇫🇷</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇩🇪 Germany <span class="score">44</span> – <span class="score win">52</span> Great Britain 🇬🇧</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇯🇵 Japan <span class="score win">56</span> – <span class="score">43</span> Denmark 🇩🇰</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇳🇱 Netherlands <span class="score win">44</span> – <span class="score">40</span> New Zealand 🇳🇿</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇫🇷 France <span class="score win">54</span> – <span class="score">40</span> Germany 🇩🇪</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇬🇧 Great Britain <span class="score">48</span> – <span class="score win">62</span> Japan 🇯🇵</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇨🇦 Canada <span class="score">39</span> – <span class="score win">49</span> USA 🇺🇸</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇨🇴 Colombia <span class="score">43</span> – <span class="score win">64</span> Denmark 🇩🇰</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇧🇷 Brazil <span class="score">32</span> – <span class="score win">59</span> Australia 🇦🇺</div>
-    </div>
-
-    <div class="day-header">Day 4 — Thursday 20 August</div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇨🇦 Canada <span class="score win">44</span> – <span class="score">42</span> Netherlands 🇳🇱</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇫🇷 France <span class="score">45</span> – <span class="score win">50</span> Japan 🇯🇵</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇧🇷 Brazil <span class="score win">58</span> – <span class="score">44</span> New Zealand 🇳🇿</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇦🇺 Australia <span class="score win">54</span> – <span class="score">44</span> USA 🇺🇸</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇩🇰 Denmark <span class="score win">57</span> – <span class="score">51</span> Germany 🇩🇪</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇯🇵 Japan <span class="score win">61</span> – <span class="score">42</span> Colombia 🇨🇴</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇨🇦 Canada <span class="score win">40</span> – <span class="score">38</span> New Zealand 🇳🇿</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇦🇺 Australia <span class="score win">60</span> – <span class="score">45</span> Netherlands 🇳🇱</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill pill-b">Group B</span> 🇫🇷 France <span class="score">42</span> – <span class="score win">57</span> Great Britain 🇬🇧</div>
-    </div>
-    <div class="result-row">
-      <div class="teams"><span class="pill">Group A</span> 🇺🇸 USA <span class="score win">57</span> – <span class="score">56</span> Brazil 🇧🇷</div>
-    </div>
-
-    <p class="footer-note"><strong>Verification note:</strong> Every score on this page is confirmed against the official live-scoring platform (tournifyapp.com/live/2026wrwc) or an official national federation page. Four of Thursday night's five late games were posted on the official feed overnight — Japan 61–42 Colombia, Canada 40–38 New Zealand, Australia 60–45 Netherlands, Great Britain 57–42 France — and every team's points-for/points-against totals reconcile exactly with the final standings below. The last group game, Brazil–USA (Thu 19:30 BRT), had still not been posted on the official feed at refresh time (~03:10 BRT Fri), but USA Wheelchair Rugby's official fixtures page (usawr.org/fixtures) lists it directly: <strong>USA 57–56 Brazil</strong>, which is how the final Group A order below is computed. The group stage is complete: all 30 group results are accounted for.</p>
+  <div class="cup">
+    <div class="kicker">World Wheelchair Rugby Championship</div>
+    <h1>🏆 Tournament Cup</h1>
+    <div class="sub">2026 WWR World Championship — São Paulo, Brazil · 17–23 August</div>
+    <span class="live-badge"><span class="live-dot"></span>Round-robin complete — all 30 group results verified</span>
   </div>
 
-  <div class="card">
-    <h2><span class="live-dot"></span> Day 5 (today, Fri 21 Aug) — quarterfinals</h2>
-    <div class="fixture-row today"><div><strong>QF1</strong> 🇦🇺 Australia (1A) vs 🇩🇰 Denmark (4B)</div><div class="time">09:00 BRT</div></div>
-    <div class="fixture-row today"><div><strong>9–12</strong> 🇳🇱 Netherlands (5A) vs 🇨🇴 Colombia (6B)</div><div class="time">09:30 BRT</div></div>
-    <div class="fixture-row today"><div><strong>QF2</strong> 🇯🇵 Japan (1B) vs 🇨🇦 Canada (4A)</div><div class="time">11:00 BRT</div></div>
-    <div class="fixture-row today"><div><strong>9–12</strong> 🇳🇿 New Zealand (6A) vs 🇩🇪 Germany (5B)</div><div class="time">11:30 BRT</div></div>
-    <div class="fixture-row today"><div><strong>QF3</strong> 🇧🇷 Brazil (3A) vs 🇬🇧 Great Britain (2B)</div><div class="time">14:30 BRT</div></div>
-    <div class="fixture-row today"><div><strong>QF4</strong> 🇫🇷 France (3B) vs 🇺🇸 USA (2A)</div><div class="time">16:30 BRT</div></div>
-    <p class="footer-note">Quarterfinal day (BRT = São Paulo local time). With the group stage complete, the bracket is set: Q1 Australia (1A) vs Denmark (4B); Q2 Japan (1B) vs Canada (4A); Q3 Brazil (3A) vs Great Britain (2B); Q4 France (3B) vs USA (2A), with the 9th–12th crossovers Netherlands–Colombia and New Zealand–Germany on court 1. Group A's final order was decided by Thursday's late Brazil–USA game — USA won 57–56 per USAWR's official fixtures page — which put the USA 2nd and Brazil 3rd on point difference (−15 vs Canada's −16). Winners of Q1/Q3 meet in Saturday's first semifinal (14:30 BRT) and winners of Q2/Q4 in the second (16:30 BRT); scores will be folded in here as officials post them.</p>
-  </div>
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button class="tab-btn active" id="tab-tournament" role="tab" aria-selected="true" aria-controls="panel-tournament">🏆 Tournament</button>
+    <button class="tab-btn" id="tab-details" role="tab" aria-selected="false" aria-controls="panel-details">📋 Details</button>
+  </nav>
 
-  <div class="card">
-    <h2>Final standings — group stage complete <span class="pill" style="background:#e6f4ea;color:#0b7a3f;">official, verified</span></h2>
-    <div class="groups">
-      <div>
-        <div class="day-header">Group A</div>
-        <table>
-          <tr><th>Team</th><th>W</th><th>L</th><th>PF–PA</th></tr>
-          <tr><td>🇦🇺 Australia</td><td>5</td><td>0</td><td>285–193</td></tr>
-          <tr><td>🇺🇸 USA</td><td>4</td><td>1</td><td>260–220</td></tr>
-          <tr><td>🇧🇷 Brazil</td><td>2</td><td>3</td><td>242–257</td></tr>
-          <tr><td>🇨🇦 Canada</td><td>2</td><td>3</td><td>212–228</td></tr>
-          <tr><td>🇳🇱 Netherlands</td><td>2</td><td>3</td><td>213–248</td></tr>
-          <tr><td>🇳🇿 New Zealand</td><td>0</td><td>5</td><td>191–257</td></tr>
+  <!-- ============ TOURNAMENT TAB ============ -->
+  <section class="tabpanel active" id="panel-tournament" role="tabpanel" aria-labelledby="tab-tournament">
+
+    <!-- Group A -->
+    <div class="gpanel">
+      <div class="ghead">
+        <span class="gchip a">Group A · Round-Robin</span>
+        <span class="gmeta">6 teams · 15/15 matches · each team played every other once</span>
+      </div>
+      <div class="rr-wrap">
+        <table class="rr">
+          <thead>
+            <tr>
+              <th>Team</th>
+              <th><span class="fl">🇦🇺</span>AUS</th>
+              <th><span class="fl">🇺🇸</span>USA</th>
+              <th><span class="fl">🇧🇷</span>BRA</th>
+              <th><span class="fl">🇨🇦</span>CAN</th>
+              <th><span class="fl">🇳🇱</span>NED</th>
+              <th><span class="fl">🇳🇿</span>NZL</th>
+              <th>W–L</th>
+              <th>PF–PA</th>
+              <th>PD</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th><span class="seed">1A</span>🇦🇺 Australia</th>
+              <td class="diag">—</td>
+              <td><span class="win">54</span>–<span class="lose">44</span></td>
+              <td><span class="win">59</span>–<span class="lose">32</span></td>
+              <td><span class="win">50</span>–<span class="lose">41</span></td>
+              <td><span class="win">60</span>–<span class="lose">45</span></td>
+              <td><span class="win">62</span>–<span class="lose">31</span></td>
+              <td class="stats"><b>5–0</b></td>
+              <td class="stats">285–193</td>
+              <td class="pd pos">+92</td>
+            </tr>
+            <tr>
+              <th><span class="seed">2A</span>🇺🇸 USA</th>
+              <td><span class="lose">44</span>–<span class="win">54</span></td>
+              <td class="diag">—</td>
+              <td><span class="win">57</span>–<span class="lose">56</span></td>
+              <td><span class="win">49</span>–<span class="lose">39</span></td>
+              <td><span class="win">57</span>–<span class="lose">33</span></td>
+              <td><span class="win">53</span>–<span class="lose">38</span></td>
+              <td class="stats"><b>4–1</b></td>
+              <td class="stats">260–220</td>
+              <td class="pd pos">+40</td>
+            </tr>
+            <tr>
+              <th><span class="seed">3A</span>🇧🇷 Brazil</th>
+              <td><span class="lose">32</span>–<span class="win">59</span></td>
+              <td><span class="lose">56</span>–<span class="win">57</span></td>
+              <td class="diag">—</td>
+              <td><span class="win">49</span>–<span class="lose">48</span></td>
+              <td><span class="lose">47</span>–<span class="win">49</span></td>
+              <td><span class="win">58</span>–<span class="lose">44</span></td>
+              <td class="stats"><b>2–3</b></td>
+              <td class="stats">242–257</td>
+              <td class="pd neg">−15</td>
+            </tr>
+            <tr>
+              <th><span class="seed">4A</span>🇨🇦 Canada</th>
+              <td><span class="lose">41</span>–<span class="win">50</span></td>
+              <td><span class="lose">39</span>–<span class="win">49</span></td>
+              <td><span class="lose">48</span>–<span class="win">49</span></td>
+              <td class="diag">—</td>
+              <td><span class="win">44</span>–<span class="lose">42</span></td>
+              <td><span class="win">40</span>–<span class="lose">38</span></td>
+              <td class="stats"><b>2–3</b></td>
+              <td class="stats">212–228</td>
+              <td class="pd neg">−16</td>
+            </tr>
+            <tr class="dim">
+              <th><span class="seed">5A</span>🇳🇱 Netherlands<span class="tag">→ 9–12 play-off</span></th>
+              <td><span class="lose">45</span>–<span class="win">60</span></td>
+              <td><span class="lose">33</span>–<span class="win">57</span></td>
+              <td><span class="win">49</span>–<span class="lose">47</span></td>
+              <td><span class="lose">42</span>–<span class="win">44</span></td>
+              <td class="diag">—</td>
+              <td><span class="win">44</span>–<span class="lose">40</span></td>
+              <td class="stats"><b>2–3</b></td>
+              <td class="stats">213–248</td>
+              <td class="pd neg">−35</td>
+            </tr>
+            <tr class="dim">
+              <th><span class="seed">6A</span>🇳🇿 New Zealand<span class="tag">→ 9–12 play-off</span></th>
+              <td><span class="lose">31</span>–<span class="win">62</span></td>
+              <td><span class="lose">38</span>–<span class="win">53</span></td>
+              <td><span class="lose">44</span>–<span class="win">58</span></td>
+              <td><span class="lose">38</span>–<span class="win">40</span></td>
+              <td><span class="lose">40</span>–<span class="win">44</span></td>
+              <td class="diag">—</td>
+              <td class="stats"><b>0–5</b></td>
+              <td class="stats">191–257</td>
+              <td class="pd neg">−66</td>
+            </tr>
+          </tbody>
         </table>
       </div>
-      <div>
-        <div class="day-header">Group B</div>
-        <table>
-          <tr><th>Team</th><th>W</th><th>L</th><th>PF–PA</th></tr>
-          <tr><td>🇯🇵 Japan</td><td>5</td><td>0</td><td>289–222</td></tr>
-          <tr><td>🇬🇧 Great Britain</td><td>4</td><td>1</td><td>269–246</td></tr>
-          <tr><td>🇫🇷 France</td><td>3</td><td>2</td><td>248–240</td></tr>
-          <tr><td>🇩🇰 Denmark</td><td>2</td><td>3</td><td>273–263</td></tr>
-          <tr><td>🇩🇪 Germany</td><td>1</td><td>4</td><td>236–267</td></tr>
-          <tr><td>🇨🇴 Colombia</td><td>0</td><td>5</td><td>211–288</td></tr>
+      <p class="legend">Score reads <span class="win">row team – opponent</span>; bold gold = winner. Every pair met once (single round-robin, 15 matches). Brazil, Canada and Netherlands all finished 2–3 and were separated by point difference (−15, −16, −35). Top 4 advance to Friday's quarterfinals.</p>
+    </div>
+
+    <!-- Group B -->
+    <div class="gpanel">
+      <div class="ghead">
+        <span class="gchip b">Group B · Round-Robin</span>
+        <span class="gmeta">6 teams · 15/15 matches · each team played every other once</span>
+      </div>
+      <div class="rr-wrap">
+        <table class="rr">
+          <thead>
+            <tr>
+              <th>Team</th>
+              <th><span class="fl">🇯🇵</span>JPN</th>
+              <th><span class="fl">🇬🇧</span>GBR</th>
+              <th><span class="fl">🇫🇷</span>FRA</th>
+              <th><span class="fl">🇩🇰</span>DEN</th>
+              <th><span class="fl">🇩🇪</span>GER</th>
+              <th><span class="fl">🇨🇴</span>COL</th>
+              <th>W–L</th>
+              <th>PF–PA</th>
+              <th>PD</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th><span class="seed">1B</span>🇯🇵 Japan</th>
+              <td class="diag">—</td>
+              <td><span class="win">62</span>–<span class="lose">48</span></td>
+              <td><span class="win">50</span>–<span class="lose">45</span></td>
+              <td><span class="win">56</span>–<span class="lose">43</span></td>
+              <td><span class="win">60</span>–<span class="lose">44</span></td>
+              <td><span class="win">61</span>–<span class="lose">42</span></td>
+              <td class="stats"><b>5–0</b></td>
+              <td class="stats">289–222</td>
+              <td class="pd pos">+67</td>
+            </tr>
+            <tr>
+              <th><span class="seed">2B</span>🇬🇧 Great Britain</th>
+              <td><span class="lose">48</span>–<span class="win">62</span></td>
+              <td class="diag">—</td>
+              <td><span class="win">57</span>–<span class="lose">42</span></td>
+              <td><span class="win">57</span>–<span class="lose">56</span></td>
+              <td><span class="win">52</span>–<span class="lose">44</span></td>
+              <td><span class="win">55</span>–<span class="lose">42</span></td>
+              <td class="stats"><b>4–1</b></td>
+              <td class="stats">269–246</td>
+              <td class="pd pos">+23</td>
+            </tr>
+            <tr>
+              <th><span class="seed">3B</span>🇫🇷 France</th>
+              <td><span class="lose">45</span>–<span class="win">50</span></td>
+              <td><span class="lose">42</span>–<span class="win">57</span></td>
+              <td class="diag">—</td>
+              <td><span class="win">56</span>–<span class="lose">53</span></td>
+              <td><span class="win">54</span>–<span class="lose">40</span></td>
+              <td><span class="win">51</span>–<span class="lose">40</span></td>
+              <td class="stats"><b>3–2</b></td>
+              <td class="stats">248–240</td>
+              <td class="pd pos">+8</td>
+            </tr>
+            <tr>
+              <th><span class="seed">4B</span>🇩🇰 Denmark</th>
+              <td><span class="lose">43</span>–<span class="win">56</span></td>
+              <td><span class="lose">56</span>–<span class="win">57</span></td>
+              <td><span class="lose">53</span>–<span class="win">56</span></td>
+              <td class="diag">—</td>
+              <td><span class="win">57</span>–<span class="lose">51</span></td>
+              <td><span class="win">64</span>–<span class="lose">43</span></td>
+              <td class="stats"><b>2–3</b></td>
+              <td class="stats">273–263</td>
+              <td class="pd pos">+10</td>
+            </tr>
+            <tr class="dim">
+              <th><span class="seed">5B</span>🇩🇪 Germany<span class="tag">→ 9–12 play-off</span></th>
+              <td><span class="lose">44</span>–<span class="win">60</span></td>
+              <td><span class="lose">44</span>–<span class="win">52</span></td>
+              <td><span class="lose">40</span>–<span class="win">54</span></td>
+              <td><span class="lose">51</span>–<span class="win">57</span></td>
+              <td class="diag">—</td>
+              <td><span class="win">57</span>–<span class="lose">44</span></td>
+              <td class="stats"><b>1–4</b></td>
+              <td class="stats">236–267</td>
+              <td class="pd neg">−31</td>
+            </tr>
+            <tr class="dim">
+              <th><span class="seed">6B</span>🇨🇴 Colombia<span class="tag">→ 9–12 play-off</span></th>
+              <td><span class="lose">42</span>–<span class="win">61</span></td>
+              <td><span class="lose">42</span>–<span class="win">55</span></td>
+              <td><span class="lose">40</span>–<span class="win">51</span></td>
+              <td><span class="lose">43</span>–<span class="win">64</span></td>
+              <td><span class="lose">44</span>–<span class="win">57</span></td>
+              <td class="diag">—</td>
+              <td class="stats"><b>0–5</b></td>
+              <td class="stats">211–288</td>
+              <td class="pd neg">−77</td>
+            </tr>
+          </tbody>
         </table>
+      </div>
+      <p class="legend">Score reads <span class="win">row team – opponent</span>; bold gold = winner. Every pair met once (single round-robin, 15 matches). Japan swept the group 5–0 ahead of Great Britain (4–1) and France (3–2); Denmark took 4th despite a positive point difference. Top 4 advance to Friday's quarterfinals.</p>
+    </div>
+
+    <!-- Road to the title -->
+    <div class="road">
+      <h2>Road to the title</h2>
+      <div class="strip">
+        <span class="chip"><b>QF1</b> 🇦🇺 Australia v 🇩🇰 Denmark — Fri 09:00</span>
+        <span class="chip"><b>QF2</b> 🇯🇵 Japan v 🇨🇦 Canada — Fri 11:00</span>
+        <span class="chip"><b>QF3</b> 🇧🇷 Brazil v 🇬🇧 Great Britain — Fri 14:30</span>
+        <span class="chip"><b>QF4</b> 🇫🇷 France v 🇺🇸 USA — Fri 16:30</span>
+        <span class="chip"><b>9–12:</b> 🇳🇱 Netherlands v 🇨🇴 Colombia (Fri 09:30) · 🇳🇿 New Zealand v 🇩🇪 Germany (Fri 11:30)</span>
+        <span class="chip"><b>Semi-finals</b> Sat 14:30 / 16:30</span>
+        <span class="chip"><b>7th &amp; 5th place</b> Sun 09:00 / 11:00</span>
+        <span class="chip"><b>🥉 Bronze</b> Sun 14:30</span>
+        <span class="chip"><b>🥇 Gold</b> Sun 16:30</span>
       </div>
     </div>
-    <p class="footer-note">Final standings after all 30 group matches (computed from the official live-scoring data, tournifyapp.com/live/2026wrwc). Group B finished Thursday: Japan swept the group 5-0 ahead of Great Britain (4-1) and France (3-2), with Denmark 4th. Group A: Australia went 5-0; USA took 2nd at 4-1 after beating Brazil 57–56 in Thursday's late game (per USAWR's official fixtures page — the live-scoring app had not yet posted it at refresh time); Brazil, Canada and Netherlands all finished 2-3 and are ordered by point difference (−15, −16, −35) after their head-to-head mini-table came out even, which put Brazil 3rd and Canada 4th; Netherlands 5th, New Zealand 6th. Every points-for/points-against figure reconciles exactly with the 30 individual match scores listed above. These standings set Friday's quarterfinals: Australia v Denmark, Japan v Canada, Brazil v Great Britain, France v USA.</p>
-  </div>
 
-  <div class="card">
-    <h2>Groups</h2>
-    <div class="groups">
-      <div>
-        <div class="day-header">Group A</div>
-        <table>
-          <tr><th>Team</th><th>Note</th></tr>
-          <tr><td>🇦🇺 Australia</td><td>Defending champions</td></tr>
-          <tr><td>🇧🇷 Brazil</td><td>Host nation</td></tr>
-          <tr><td>🇨🇦 Canada</td><td></td></tr>
-          <tr><td>🇳🇱 Netherlands</td><td>First worlds in 20 years</td></tr>
-          <tr><td>🇳🇿 New Zealand</td><td></td></tr>
-          <tr><td>🇺🇸 USA</td><td>2024 Paralympic silver</td></tr>
-        </table>
+  </section>
+
+  <!-- ============ DETAILS TAB ============ -->
+  <section class="tabpanel" id="panel-details" role="tabpanel" aria-labelledby="tab-details">
+
+    <div class="card">
+      <h2><span class="live-dot"></span> All confirmed results</h2>
+
+      <div class="day-header">Day 1 — Monday 17 August</div>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇦🇺 Australia <span class="score win">50</span> – <span class="score">41</span> Canada 🇨🇦</div>
       </div>
-      <div>
-        <div class="day-header">Group B</div>
-        <table>
-          <tr><th>Team</th><th>Note</th></tr>
-          <tr><td>🇯🇵 Japan</td><td>2024 Paralympic gold, top seed</td></tr>
-          <tr><td>🇬🇧 Great Britain</td><td></td></tr>
-          <tr><td>🇫🇷 France</td><td></td></tr>
-          <tr><td>🇩🇪 Germany</td><td></td></tr>
-          <tr><td>🇨🇴 Colombia</td><td></td></tr>
-          <tr><td>🇩🇰 Denmark</td><td></td></tr>
-        </table>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇧🇷 Brazil <span class="score">47</span> – <span class="score win">49</span> Netherlands 🇳🇱</div>
       </div>
+
+      <div class="day-header">Day 2 — Tuesday 18 August</div>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇳🇱 Netherlands <span class="score">33</span> – <span class="score win">57</span> USA 🇺🇸</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇳🇿 New Zealand <span class="score">38</span> – <span class="score win">53</span> USA 🇺🇸</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇳🇿 New Zealand <span class="score">31</span> – <span class="score win">62</span> Australia 🇦🇺</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇧🇷 Brazil <span class="score win">49</span> – <span class="score">48</span> Canada 🇨🇦</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇨🇴 Colombia <span class="score">44</span> – <span class="score win">57</span> Germany 🇩🇪</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇩🇰 Denmark <span class="score">56</span> – <span class="score win">57</span> Great Britain 🇬🇧</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇨🇴 Colombia <span class="score">42</span> – <span class="score win">55</span> Great Britain 🇬🇧</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇩🇪 Germany <span class="score">44</span> – <span class="score win">60</span> Japan 🇯🇵</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇩🇰 Denmark <span class="score">53</span> – <span class="score win">56</span> France 🇫🇷</div>
+      </div>
+
+      <div class="day-header">Day 3 — Wednesday 19 August</div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇨🇴 Colombia <span class="score">40</span> – <span class="score win">51</span> France 🇫🇷</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇩🇪 Germany <span class="score">44</span> – <span class="score win">52</span> Great Britain 🇬🇧</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇯🇵 Japan <span class="score win">56</span> – <span class="score">43</span> Denmark 🇩🇰</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇳🇱 Netherlands <span class="score win">44</span> – <span class="score">40</span> New Zealand 🇳🇿</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇫🇷 France <span class="score win">54</span> – <span class="score">40</span> Germany 🇩🇪</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇬🇧 Great Britain <span class="score">48</span> – <span class="score win">62</span> Japan 🇯🇵</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇨🇦 Canada <span class="score">39</span> – <span class="score win">49</span> USA 🇺🇸</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇨🇴 Colombia <span class="score">43</span> – <span class="score win">64</span> Denmark 🇩🇰</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇧🇷 Brazil <span class="score">32</span> – <span class="score win">59</span> Australia 🇦🇺</div>
+      </div>
+
+      <div class="day-header">Day 4 — Thursday 20 August</div>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇨🇦 Canada <span class="score win">44</span> – <span class="score">42</span> Netherlands 🇳🇱</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇫🇷 France <span class="score">45</span> – <span class="score win">50</span> Japan 🇯🇵</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇧🇷 Brazil <span class="score win">58</span> – <span class="score">44</span> New Zealand 🇳🇿</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇦🇺 Australia <span class="score win">54</span> – <span class="score">44</span> USA 🇺🇸</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇩🇰 Denmark <span class="score win">57</span> – <span class="score">51</span> Germany 🇩🇪</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇯🇵 Japan <span class="score win">61</span> – <span class="score">42</span> Colombia 🇨🇴</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇨🇦 Canada <span class="score win">40</span> – <span class="score">38</span> New Zealand 🇳🇿</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇦🇺 Australia <span class="score win">60</span> – <span class="score">45</span> Netherlands 🇳🇱</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill pill-b">Group B</span> 🇫🇷 France <span class="score">42</span> – <span class="score win">57</span> Great Britain 🇬🇧</div>
+      </div>
+      <div class="result-row">
+        <div class="teams"><span class="pill">Group A</span> 🇺🇸 USA <span class="score win">57</span> – <span class="score">56</span> Brazil 🇧🇷</div>
+      </div>
+
+      <p class="footer-note"><strong>Verification note:</strong> Every score on this page is confirmed against the official live-scoring platform (tournifyapp.com/live/2026wrwc) or an official national federation page. Four of Thursday night's five late games were posted on the official feed overnight — Japan 61–42 Colombia, Canada 40–38 New Zealand, Australia 60–45 Netherlands, Great Britain 57–42 France — and every team's points-for/points-against totals reconcile exactly with the final standings below. The last group game, Brazil–USA (Thu 19:30 BRT), had still not been posted on the official feed at refresh time (~03:10 BRT Fri), but USA Wheelchair Rugby's official fixtures page (usawr.org/fixtures) lists it directly: <strong>USA 57–56 Brazil</strong>, which is how the final Group A order below is computed. The group stage is complete: all 30 group results are accounted for.</p>
     </div>
-    <p class="footer-note">Group B confirmed directly from Germany's published match schedule (Colombia, Japan, Great Britain, France, Denmark are Germany's five group opponents), cross-checked against the official tournament schedule and Colombian/Brazilian federation coverage.</p>
-  </div>
 
-  <div class="card">
-    <h2>Tournament schedule</h2>
-    <div class="day-header">Group stage</div>
-    <div class="fixture-row"><div>Pool matches, all teams</div><div class="time">Mon 17 – Thu 20 Aug</div></div>
-    <div class="day-header">Knockout rounds (official bracket)</div>
-    <div class="fixture-row"><div>Q1: 🇦🇺 Australia (1A) vs 🇩🇰 Denmark (4B) &nbsp;·&nbsp; 🇳🇱 Netherlands (5A) v 🇨🇴 Colombia (6B)</div><div class="time">Fri 21 Aug, 09:00 / 09:30 BRT</div></div>
-    <div class="fixture-row"><div>Q2: 🇯🇵 Japan (1B) vs 🇨🇦 Canada (4A) &nbsp;·&nbsp; 🇳🇿 New Zealand (6A) v 🇩🇪 Germany (5B)</div><div class="time">Fri 21 Aug, 11:00 / 11:30 BRT</div></div>
-    <div class="fixture-row"><div>Q3: 🇧🇷 Brazil (3A) vs 🇬🇧 Great Britain (2B)</div><div class="time">Fri 21 Aug, 14:30 BRT</div></div>
-    <div class="fixture-row"><div>Q4: 🇫🇷 France (3B) vs 🇺🇸 USA (2A)</div><div class="time">Fri 21 Aug, 16:30 BRT</div></div>
-    <div class="fixture-row"><div>Crossovers &amp; 9th/11th place matches</div><div class="time">Sat 22 Aug, 09:00–11:30 BRT</div></div>
-    <div class="fixture-row"><div>Semifinals (Winner Q1 vs Winner Q3; Winner Q2 vs Winner Q4)</div><div class="time">Sat 22 Aug, 14:30 / 16:30 BRT</div></div>
-    <div class="fixture-row"><div>7th &amp; 5th place matches</div><div class="time">Sun 23 Aug, 09:00 / 11:00 BRT</div></div>
-    <div class="fixture-row"><div>Bronze Medal Match</div><div class="time">Sun 23 Aug, 14:30 BRT</div></div>
-    <div class="fixture-row"><div>Gold Medal Final</div><div class="time">Sun 23 Aug, 16:30 BRT</div></div>
-    <p class="footer-note">Full knockout bracket structure pulled directly from the official schedule (tournifyapp.com/live/2026wrwc/schedule). Quarterfinal pairings above apply the official bracket (1A v 4B · 1B v 4A · 3A v 2B · 3B v 2A) to the final group standings; the 9th–12th crossovers are named in the official bracket itself (5A v 6B, 6A v 5B). Semifinal and medal assignments will be filled in after Friday's quarterfinals.</p>
-  </div>
+    <div class="card">
+      <h2><span class="live-dot"></span> Day 5 (today, Fri 21 Aug) — quarterfinals</h2>
+      <div class="fixture-row today"><div><strong>QF1</strong> 🇦🇺 Australia (1A) vs 🇩🇰 Denmark (4B)</div><div class="time">09:00 BRT</div></div>
+      <div class="fixture-row today"><div><strong>9–12</strong> 🇳🇱 Netherlands (5A) vs 🇨🇴 Colombia (6B)</div><div class="time">09:30 BRT</div></div>
+      <div class="fixture-row today"><div><strong>QF2</strong> 🇯🇵 Japan (1B) vs 🇨🇦 Canada (4A)</div><div class="time">11:00 BRT</div></div>
+      <div class="fixture-row today"><div><strong>9–12</strong> 🇳🇿 New Zealand (6A) vs 🇩🇪 Germany (5B)</div><div class="time">11:30 BRT</div></div>
+      <div class="fixture-row today"><div><strong>QF3</strong> 🇧🇷 Brazil (3A) vs 🇬🇧 Great Britain (2B)</div><div class="time">14:30 BRT</div></div>
+      <div class="fixture-row today"><div><strong>QF4</strong> 🇫🇷 France (3B) vs 🇺🇸 USA (2A)</div><div class="time">16:30 BRT</div></div>
+      <p class="footer-note">Quarterfinal day (BRT = São Paulo local time). With the group stage complete, the bracket is set: Q1 Australia (1A) vs Denmark (4B); Q2 Japan (1B) vs Canada (4A); Q3 Brazil (3A) vs Great Britain (2B); Q4 France (3B) vs USA (2A), with the 9th–12th crossovers Netherlands–Colombia and New Zealand–Germany on court 1. Group A's final order was decided by Thursday's late Brazil–USA game — USA won 57–56 per USAWR's official fixtures page — which put the USA 2nd and Brazil 3rd on point difference (−15 vs Canada's −16). Winners of Q1/Q3 meet in Saturday's first semifinal (14:30 BRT) and winners of Q2/Q4 in the second (16:30 BRT); scores will be folded in here as officials post them.</p>
+    </div>
 
-  <div class="card">
-    <h2>Sources &amp; freshness</h2>
-    <p class="footer-note">
-      Last refreshed 21 August 2026, ~03:10 BRT (06:10 UTC). Primary source: the official live-scoring platform at <a href="https://tournifyapp.com/live/2026wrwc" target="_blank">tournifyapp.com/live/2026wrwc</a> — its public data feed (the same store the Schedule and Standings pages render) was read directly again this refresh and now carries all 30 group results except Brazil–USA, including Thursday night's four late scores (Japan 61–42 Colombia; Canada 40–38 New Zealand; Australia 60–45 Netherlands; Great Britain 57–42 France), plus the full knockout schedule. The final group game, USA 57–56 Brazil, was read directly from USA Wheelchair Rugby's official fixtures page (<a href="https://usawr.org/fixtures/" target="_blank">usawr.org/fixtures</a>) — the official app had not yet posted it at refresh time. Wheelchair Rugby Canada's event page (wheelchairrugby.ca) was also checked and lists Canada 40–38 New Zealand, matching the feed. ABRC (rugbiabrc.org.br) was checked as well; its newest news item still covers Day 3. Final standings, Friday's quarterfinal pairings (Australia–Denmark, Japan–Canada, Brazil–Great Britain, France–USA) and the 9th–12th crossovers (Netherlands–Colombia, New Zealand–Germany) follow from those results under the official bracket. This artifact refreshes automatically on an hourly schedule; you can also ask to have it refreshed on demand.
-    </p>
-  </div>
+    <div class="card">
+      <h2>Final standings — group stage complete <span class="pill" style="background:rgba(16,185,129,0.18);color:#6ee7b7;">official, verified</span></h2>
+      <div class="groups">
+        <div>
+          <div class="day-header">Group A</div>
+          <table>
+            <tr><th>Team</th><th>W</th><th>L</th><th>PF–PA</th></tr>
+            <tr><td>🇦🇺 Australia</td><td>5</td><td>0</td><td>285–193</td></tr>
+            <tr><td>🇺🇸 USA</td><td>4</td><td>1</td><td>260–220</td></tr>
+            <tr><td>🇧🇷 Brazil</td><td>2</td><td>3</td><td>242–257</td></tr>
+            <tr><td>🇨🇦 Canada</td><td>2</td><td>3</td><td>212–228</td></tr>
+            <tr><td>🇳🇱 Netherlands</td><td>2</td><td>3</td><td>213–248</td></tr>
+            <tr><td>🇳🇿 New Zealand</td><td>0</td><td>5</td><td>191–257</td></tr>
+          </table>
+        </div>
+        <div>
+          <div class="day-header">Group B</div>
+          <table>
+            <tr><th>Team</th><th>W</th><th>L</th><th>PF–PA</th></tr>
+            <tr><td>🇯🇵 Japan</td><td>5</td><td>0</td><td>289–222</td></tr>
+            <tr><td>🇬🇧 Great Britain</td><td>4</td><td>1</td><td>269–246</td></tr>
+            <tr><td>🇫🇷 France</td><td>3</td><td>2</td><td>248–240</td></tr>
+            <tr><td>🇩🇰 Denmark</td><td>2</td><td>3</td><td>273–263</td></tr>
+            <tr><td>🇩🇪 Germany</td><td>1</td><td>4</td><td>236–267</td></tr>
+            <tr><td>🇨🇴 Colombia</td><td>0</td><td>5</td><td>211–288</td></tr>
+          </table>
+        </div>
+      </div>
+      <p class="footer-note">Final standings after all 30 group matches (computed from the official live-scoring data, tournifyapp.com/live/2026wrwc). Group B finished Thursday: Japan swept the group 5-0 ahead of Great Britain (4-1) and France (3-2), with Denmark 4th. Group A: Australia went 5-0; USA took 2nd at 4-1 after beating Brazil 57–56 in Thursday's late game (per USAWR's official fixtures page — the live-scoring app had not yet posted it at refresh time); Brazil, Canada and Netherlands all finished 2-3 and are ordered by point difference (−15, −16, −35) after their head-to-head mini-table came out even, which put Brazil 3rd and Canada 4th; Netherlands 5th, New Zealand 6th. Every points-for/points-against figure reconciles exactly with the 30 individual match scores listed above. These standings set Friday's quarterfinals: Australia v Denmark, Japan v Canada, Brazil v Great Britain, France v USA.</p>
+    </div>
+
+    <div class="card">
+      <h2>Groups</h2>
+      <div class="groups">
+        <div>
+          <div class="day-header">Group A</div>
+          <table>
+            <tr><th>Team</th><th>Note</th></tr>
+            <tr><td>🇦🇺 Australia</td><td>Defending champions</td></tr>
+            <tr><td>🇧🇷 Brazil</td><td>Host nation</td></tr>
+            <tr><td>🇨🇦 Canada</td><td></td></tr>
+            <tr><td>🇳🇱 Netherlands</td><td>First worlds in 20 years</td></tr>
+            <tr><td>🇳🇿 New Zealand</td><td></td></tr>
+            <tr><td>🇺🇸 USA</td><td>2024 Paralympic silver</td></tr>
+          </table>
+        </div>
+        <div>
+          <div class="day-header">Group B</div>
+          <table>
+            <tr><th>Team</th><th>Note</th></tr>
+            <tr><td>🇯🇵 Japan</td><td>2024 Paralympic gold, top seed</td></tr>
+            <tr><td>🇬🇧 Great Britain</td><td></td></tr>
+            <tr><td>🇫🇷 France</td><td></td></tr>
+            <tr><td>🇩🇪 Germany</td><td></td></tr>
+            <tr><td>🇨🇴 Colombia</td><td></td></tr>
+            <tr><td>🇩🇰 Denmark</td><td></td></tr>
+          </table>
+        </div>
+      </div>
+      <p class="footer-note">Group B confirmed directly from Germany's published match schedule (Colombia, Japan, Great Britain, France, Denmark are Germany's five group opponents), cross-checked against the official tournament schedule and Colombian/Brazilian federation coverage.</p>
+    </div>
+
+    <div class="card">
+      <h2>Tournament schedule</h2>
+      <div class="day-header">Group stage</div>
+      <div class="fixture-row"><div>Pool matches, all teams</div><div class="time">Mon 17 – Thu 20 Aug</div></div>
+      <div class="day-header">Knockout rounds (official bracket)</div>
+      <div class="fixture-row"><div>Q1: 🇦🇺 Australia (1A) vs 🇩🇰 Denmark (4B) &nbsp;·&nbsp; 🇳🇱 Netherlands (5A) v 🇨🇴 Colombia (6B)</div><div class="time">Fri 21 Aug, 09:00 / 09:30 BRT</div></div>
+      <div class="fixture-row"><div>Q2: 🇯🇵 Japan (1B) vs 🇨🇦 Canada (4A) &nbsp;·&nbsp; 🇳🇿 New Zealand (6A) v 🇩🇪 Germany (5B)</div><div class="time">Fri 21 Aug, 11:00 / 11:30 BRT</div></div>
+      <div class="fixture-row"><div>Q3: 🇧🇷 Brazil (3A) vs 🇬🇧 Great Britain (2B)</div><div class="time">Fri 21 Aug, 14:30 BRT</div></div>
+      <div class="fixture-row"><div>Q4: 🇫🇷 France (3B) vs 🇺🇸 USA (2A)</div><div class="time">Fri 21 Aug, 16:30 BRT</div></div>
+      <div class="fixture-row"><div>Crossovers &amp; 9th/11th place matches</div><div class="time">Sat 22 Aug, 09:00–11:30 BRT</div></div>
+      <div class="fixture-row"><div>Semifinals (Winner Q1 vs Winner Q3; Winner Q2 vs Winner Q4)</div><div class="time">Sat 22 Aug, 14:30 / 16:30 BRT</div></div>
+      <div class="fixture-row"><div>7th &amp; 5th place matches</div><div class="time">Sun 23 Aug, 09:00 / 11:00 BRT</div></div>
+      <div class="fixture-row"><div>Bronze Medal Match</div><div class="time">Sun 23 Aug, 14:30 BRT</div></div>
+      <div class="fixture-row"><div>Gold Medal Final</div><div class="time">Sun 23 Aug, 16:30 BRT</div></div>
+      <p class="footer-note">Full knockout bracket structure pulled directly from the official schedule (tournifyapp.com/live/2026wrwc/schedule). Quarterfinal pairings above apply the official bracket (1A v 4B · 1B v 4A · 3A v 2B · 3B v 2A) to the final group standings; the 9th–12th crossovers are named in the official bracket itself (5A v 6B, 6A v 5B). Semifinal and medal assignments will be filled in after Friday's quarterfinals.</p>
+    </div>
+
+    <div class="card">
+      <h2>Sources &amp; freshness</h2>
+      <p class="footer-note">
+        Last refreshed 21 August 2026, ~03:10 BRT (06:10 UTC). Primary source: the official live-scoring platform at <a href="https://tournifyapp.com/live/2026wrwc" target="_blank">tournifyapp.com/live/2026wrwc</a> — its public data feed (the same store the Schedule and Standings pages render) was read directly again this refresh and now carries all 30 group results except Brazil–USA, including Thursday night's four late scores (Japan 61–42 Colombia; Canada 40–38 New Zealand; Australia 60–45 Netherlands; Great Britain 57–42 France), plus the full knockout schedule. The final group game, USA 57–56 Brazil, was read directly from USA Wheelchair Rugby's official fixtures page (<a href="https://usawr.org/fixtures/" target="_blank">usawr.org/fixtures</a>) — the official app had not yet posted it at refresh time. Wheelchair Rugby Canada's event page (wheelchairrugby.ca) was also checked and lists Canada 40–38 New Zealand, matching the feed. ABRC (rugbiabrc.org.br) was checked as well; its newest news item still covers Day 3. Final standings, Friday's quarterfinal pairings (Australia–Denmark, Japan–Canada, Brazil–Great Britain, France–USA) and the 9th–12th crossovers (Netherlands–Colombia, New Zealand–Germany) follow from those results under the official bracket. This artifact refreshes automatically on an hourly schedule; you can also ask to have it refreshed on demand.
+      </p>
+    </div>
+
+  </section>
 
 </div>
+
+<div class="foot">
+  Round-robin format: each of the 12 teams played every other team in its group once (6 teams per group, 15 matches per group — all 30 results shown in the Tournament tab). Rankings use wins, then point difference. Every score and every points-for/points-against figure reconciles exactly with the 30 match results and was verified against the official live-scoring platform (tournifyapp.com/live/2026wrwc) and USAWR's fixtures page (USA 57–56 Brazil, the final group game). Semifinal and medal scores will be added here as officials post them. Full details, verification notes, and sources are in the <a href="#details">Details tab</a>.
+</div>
+
+<script>
+(function () {
+  var tabs = document.querySelectorAll('.tab-btn');
+  var panels = {
+    tournament: document.getElementById('panel-tournament'),
+    details: document.getElementById('panel-details')
+  };
+  function select(name, updateHash) {
+    Object.keys(panels).forEach(function (key) {
+      var on = key === name;
+      panels[key].classList.toggle('active', on);
+      document.getElementById('tab-' + key).classList.toggle('active', on);
+      document.getElementById('tab-' + key).setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    if (updateHash !== false) {
+      try { history.replaceState(null, '', '#' + name); } catch (e) {}
+    }
+  }
+  tabs.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      select(btn.id.replace('tab-', ''));
+    });
+  });
+  var initial = (location.hash || '').replace('#', '');
+  if (initial === 'details') { select('details', false); }
+})();
+</script>
+
 </body>
 </html>
